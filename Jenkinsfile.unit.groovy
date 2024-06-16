@@ -21,15 +21,12 @@ pipeline {
                 archiveArtifacts artifacts: 'results/api_result.xml'
             }
         }
-        // Commenting out the E2E tests stage
-        /*
         stage('E2E tests') {
             steps {
                 sh 'make test-e2e'
                 archiveArtifacts artifacts: 'results/e2e_result.xml'
             }
         }
-        */
     }
     post {
         always {
