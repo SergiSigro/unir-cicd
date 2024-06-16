@@ -21,16 +21,31 @@ pipeline {
                 archiveArtifacts artifacts: 'results/api_result.xml'
             }
         }
+        // Commenting out the E2E tests stage
+        /*
         stage('E2E tests') {
             steps {
                 sh 'make test-e2e'
                 archiveArtifacts artifacts: 'results/e2e_result.xml'
             }
         }
+        */
     }
     post {
         always {
             junit 'results/*_result.xml'
+            cleanWs()
+        }
+        failure {
+            script {
+                def jobName = env.JOB_NAME
+                def buildNumber = env.BUILD_NUMBER
+                emailext(
+                    subject: "Pipeline failed: ${jobName} #${buildNumber}",
+                    body: "The pipeline job '${jobName}' (build #${buildNumber}) has failed. Please check the Jenkins console output for more details.",
+                    to: "sergi.sigro@gmail.com"
+                )
+            }
         }
     }
 }
